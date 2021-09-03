@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class CoffeorderadminConfig(AppConfig):
+class OrderConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'coffeOrderAdmin'
+    name = 'order'

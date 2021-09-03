@@ -16,11 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.urls.conf import include
-from apps.coffeOrderClient import urls as coffeOrderClientUrls
-from apps.coffeOrderAdmin import urls as coffeOrderAdminUrls
-from apps.coffeOrderBusiness import urls as coffeOrderBusinessUrls
+# from apps.coffeOrderClient import apis as coffeOrderClientAPI
+# from apps.coffeOrderAdmin import apis as coffeOrderAdminAPI
+# from apps.coffeOrderBusiness import apis as coffeOrderBusinessAPI
+# from apps.coffeOrderClient import urls as coffeOrderClientURL
+# from apps.coffeOrderAdmin import urls as coffeOrderAdminURL
+# from apps.coffeOrderBusiness import urls as coffeOrderBusinessURL
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(coffeOrderClientUrls,
-         coffeOrderAdminUrls, coffeOrderBusinessUrls))
+    # path('api/', include('myCoffe.apps.coffeOrderClient.urls')),
+    path('', include('myCoffe.apps.coffeOrderClient.urls')),
 ]
