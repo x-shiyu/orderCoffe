@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/global.css' %}">
+  <title>Document</title>
+
+</head>
+<body>
+    <div>
+      <ul>
+        <li>用户名:<input type="text" name="username" id="username"></li>
+        <li>密码:<input type="password" name="password" id="password"></li>
+        <li>
+          <button id="register">注册</button>
+        </li>
+      </div>
+    </div>
+
+    <script src="{% static 'js/axios.min.js' %}"></script>
+    <script>
+      document.getElementById('register').addEventListener('click',()=>{
+        const elUserName = document.getElementById('username')
+        const elPassword = document.getElementById('password')
+        console.log(elUserName.value);
+        console.log(elPassword.value);
+        axios.post('/register/',{
+          username:elUserName.value,
+          password:elPassword.value
+        }).then((response)=>{
+          debugger
+        }).catch(()=>{
+          debugger
+        })
+      })
+    </script>
+</body>
+</html>

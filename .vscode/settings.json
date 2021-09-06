@@ -1,0 +1,12 @@
+{
+	"python.pythonPath": "/opt/anaconda3/envs/coffe_env",
+	"sqltools.connections": [
+		{
+			"previewLimit": 50,
+			"driver": "SQLite",
+			"name": "coffe",
+			"database": "${workspaceFolder:orderCoffe}/db.sqlite3"
+		}
+	],
+	"sqltools.useNodeRuntime": true
+}
