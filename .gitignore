@@ -1,2 +1,4 @@
-goods/_pycache_
-myCoffe/_pycache_
+
+goods
+myCoffe/__pycache__/
+file/__pycache__/

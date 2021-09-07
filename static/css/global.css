@@ -1,7 +1,23 @@
-html,p,ul,li,h1,h2,h3{
+html,
+p,
+ul,
+li,
+h1,
+h2,
+h3 {
   padding: 0;
   margin: 0;
 }
-ul{
+ul {
   list-style: none;
+}
+.line-center {
+  text-align: center;
+}
+.flex-v-center {
+  display: flex;
+  align-items: center;
+}
+.margin-center {
+  margin: 0 auto;
 }
