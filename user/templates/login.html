@@ -47,8 +47,8 @@
           <input type="password" class="form-control" id="password" />
         </div>
         <div class="line-center">
-          <button type="button" class="btn btn-outline-primary" id="register">
-            注册
+          <button type="button" class="btn btn-outline-primary" id="login">
+            登录
           </button>
         </div>
       </form>
@@ -58,12 +58,12 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/axios.min.js' %}"></script>
     <script>
-      document.getElementById("register").addEventListener("click", () => {
+      document.getElementById("login").addEventListener("click", () => {
         $(".error-msg").hide();
         const elUserName = document.getElementById("email");
         const elPassword = document.getElementById("password");
         axios({
-          url: "/register/",
+          url: "/login/",
           method: "post",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",

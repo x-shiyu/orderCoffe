@@ -1,4 +1,11 @@
 
-goods
+goods/__pycache__/
 myCoffe/__pycache__/
 file/__pycache__/
+order/__pycache__/
+user/__pycache__/
+goods/migrations
+myCoffe/migrations
+file/migrations
+order/migrations
+user/migrations
