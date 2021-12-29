@@ -9,3 +9,5 @@ myCoffe/migrations
 file/migrations
 order/migrations
 user/migrations
+utils/__pycache__/
+.vscode/

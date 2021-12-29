@@ -5,7 +5,7 @@
 			"previewLimit": 50,
 			"driver": "SQLite",
 			"name": "coffe",
-			"database": "${workspaceFolder:orderCoffe}/db.sqlite3"
+			"database": "${workspaceFolder:orderCoffe}/sqlite3.db"
 		}
 	],
 	"sqltools.useNodeRuntime": true
