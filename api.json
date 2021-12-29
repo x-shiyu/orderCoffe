@@ -1,0 +1,92 @@
+/api/login post 登录
+/api/register post 注册
+/api/order post  提交订单
+/api/order/accept post   修改订单状态（商户接单）
+/api/user/password put  修改密码
+/api/goods put 修改商品
+/api/goods post 新增商品
+
+/api/discount post 新增折扣信息
+
+/api/file get 获取文件
+/api/file post 上传文件
+/api/config/accept  put 修改配置，就是是否自动接单
+
+
+/api/cate/coffe get 获取某个分类下的商品
+{
+  categoryName: categoryInfo.name,
+  categoryId: categoryInfo.id,
+  name: Random.cword(8, 16),
+  monthSell: Random.integer(0, 300),
+  price: Random.float(10, 30),
+  thumb: Random.url(),
+  id: Random.natural(),
+  canUsePoints: Random.integer(100, 600),
+}
+
+/api/goods/cate  get 获取所有的咖啡分类
+{
+  id: Date.now(),
+  name: request.body.cate,
+  desc: request.body.desc,
+}
+
+/api/order  get  获取所有订单
+{
+  name: '@cword(8, 16)',
+  createTime: '@datetime',
+  thumb: '@url',
+  id: '@id',
+  status: '进行中',
+  'discount|0-5': [{
+      full: Random.integer(20, 40),
+      minus: Random.integer(10, 20)
+  }],
+  'goodsList|3-10': [{
+      thumb: '@url',
+      name: '@cword(5,10)'
+  }],
+  totalPrice: Random.float(20, 100)
+}
+
+
+
+/api/user/info  get  获取用户信息
+{
+  email: '@email',
+  nickname: '@cname',
+  vip_level: '@integer(0,3)',
+  points: '@integer(0,100000)',
+}
+
+/api/business get  获取商户信息
+export interface BusinessInfo {
+  name: string,
+  thumb: string,
+  vote: number,
+  monthSell: number,
+  desc: string,
+  id: number,
+  discount?: {
+      full: number
+      minus: number
+  }[]
+}
+
+/api/business/coffe get 获取商户下的咖啡信息
+export interface CoffeOrderInfo {
+  categoryName: string,
+  categoryId: number,
+  name: string,
+  monthSell: number,
+  price: number,
+  thumb: string,
+  id: number
+  canUsePoints: number
+  discount?: {
+      full: number
+      minus: number
+  }[]
+}
+

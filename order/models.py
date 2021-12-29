@@ -1,11 +1,17 @@
 from django.db import models
-from user.models import Business, User
-from goods.models import Coffe
-# Create your models here.
+from UserInfo.models import Shop, User
+from Goods.models import Goods, Promotion
+
 
 
 class Order(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
-    business = models.ForeignKey(Business, on_delete=models.CASCADE)
-    goods = models.ManyToManyField(Coffe)
-    price = models.FloatField(default=0)
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
+    goods = models.ManyToManyField(Goods)
+    # 实际付款
+    real_pay = models.FloatField(default=0)
+    status = models.IntegerField()
+    # 使用积分付款
+    abstract_pay = models.FloatField(default=0) 
+    # 当前订单使用的折扣id
+    promotion = models.ForeignKey(Promotion,on_delete=models.CASCADE)

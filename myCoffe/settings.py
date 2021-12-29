@@ -37,18 +37,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'file',
-    'user',
-    'goods',
-    'order',
+    'File',
+    'UserInfo',
+    'Goods',
+    'Order',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'middlewares.UserAuthMiddleware.AuthMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -79,8 +82,12 @@ WSGI_APPLICATION = 'myCoffe.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'sqlite3.db',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'coffe_order',
+        'USER':'root',
+        'PASSWORD':'123456',
+        'PORT':'3306',
+        'HOST':'localhost'
     }
 }
 
@@ -131,4 +138,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-AUTH_USER_MODEL = 'user.User'
+AUTH_USER_MODEL = 'UserInfo.User'
+
+AUTHENTICATION_BACKENDS = ["auth.authBackend.CustomBackend"]
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'

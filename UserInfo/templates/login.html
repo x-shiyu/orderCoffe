@@ -32,7 +32,25 @@
       <div class="h30">
         <p class="error-msg">用户或密码错误</p>
       </div>
-      <form>
+      <form id='form'>
+        <div class="mb-3">
+          <span class="form-label">用户类型：</span>
+          <input
+            class="form-check-input"
+            type="radio"
+            name="code"
+            id="customer"
+            checked
+          />
+          <label for="customer" class="form-label">客户</label>
+          <input
+            class="form-check-input"
+            type="radio"
+            name="code"
+            id="business"
+          />
+          <label for="business" class="form-label">商家</label>
+        </div>
         <div class="mb-3">
           <label for="email" class="form-label">邮箱：</label>
           <input
@@ -58,32 +76,34 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/axios.min.js' %}"></script>
     <script>
-      document.getElementById("login").addEventListener("click", () => {
-        $(".error-msg").hide();
-        const elUserName = document.getElementById("email");
-        const elPassword = document.getElementById("password");
+      document.getElementById('login').addEventListener('click', () => {
+        $('.error-msg').hide()
+        const elUserName = document.getElementById('email')
+        const elPassword = document.getElementById('password')
+        const elCustomer = document.getElementById('customer')
         axios({
-          url: "/login/",
-          method: "post",
+          url: '/login/',
+          method: 'post',
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
+            'Content-Type': 'application/x-www-form-urlencoded',
           },
           data: Qs.stringify({
             email: elUserName.value,
             password: elPassword.value,
+            code: elCustomer.checked ? 100 : 300,
           }),
         })
           .then((response) => {
             if (response.status === 200) {
-              location.href = "/";
+              location.href = '/'
             } else {
-              $(".error-msg").show();
+              $('.error-msg').show()
             }
           })
           .catch((err) => {
-            alert(err.response.data);
-          });
-      });
+            alert(err.response.data)
+          })
+      })
     </script>
   </body>
 </html>
