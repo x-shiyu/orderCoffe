@@ -1,9 +1,11 @@
 from django.db import models
-from File.models import Attachment
-from Goods.models import Promotion
+from apps.File.models import Attachment
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 
+class Promotion(models.Model):
+    full = models.FloatField()
+    min = models.FloatField()
 
 class Group(models.Model):
     name = models.CharField(max_length=100)
@@ -14,10 +16,10 @@ class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
         user = self.model(
             email=self.normalize_email(email),
+            password= password,
         )
-        user.password = password;
         return user
-    
+
     def create_superuser(self, email, firstname, lastname, phone, password=None):
         user = self.create_user(
             email=email,
@@ -40,9 +42,8 @@ class User(AbstractBaseUser):
     abstract_money = models.FloatField(default=0)
     sex = models.CharField(max_length=2)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    USERNAME_FIELD = 'email'
     objects = UserManager()
-
+    USERNAME_FIELD = 'email'
     def __str__(self):
         return self.email + ", " + self.nickname
 
@@ -55,6 +56,6 @@ class Shop(models.Model):
     desc = models.CharField(max_length=200)
     thumb = models.ForeignKey(Attachment, on_delete=models.CASCADE)
     vote = models.IntegerField(default=0)
-    promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE)
+    promotion = models.ForeignKey(
+        Promotion, on_delete=models.CASCADE, null=True, blank=True)
     monthSell = models.IntegerField(default=0)
-

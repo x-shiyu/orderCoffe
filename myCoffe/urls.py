@@ -3,5 +3,8 @@ from django.urls import path, include
 from .views import index
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('UserInfo.urls'))
+    path('api/file/', include('apps.File.urls')),
+    path('api/auth/', include('UserInfo.urls')),
+    path('api/user/', include('UserInfo.urls')),
+    path('api/goods/', include('apps.Goods.urls')),
 ]

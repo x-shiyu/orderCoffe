@@ -39,10 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'File',
+    'apps.File',
     'UserInfo',
-    'Goods',
-    'Order',
+    'apps.Goods',
+    'apps.Order',
     'corsheaders'
 ]
 
@@ -143,5 +143,3 @@ STATICFILES_DIRS = [
 AUTH_USER_MODEL = 'UserInfo.User'
 
 AUTHENTICATION_BACKENDS = ["auth.authBackend.CustomBackend"]
-
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
