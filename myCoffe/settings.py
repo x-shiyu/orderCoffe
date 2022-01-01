@@ -63,7 +63,7 @@ ROOT_URLCONF = 'myCoffe.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,'static')],
+        'DIRS': [os.path.join(BASE_DIR, 'static')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -86,10 +86,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'coffe_order',
-        'USER':'root',
-        'PASSWORD':'123456',
-        'PORT':'3306',
-        'HOST':'localhost'
+        'USER': 'root',
+        'PASSWORD': '!1234567',
+        'PORT': '3306',
+        'HOST': 'localhost'
     }
 }
 
