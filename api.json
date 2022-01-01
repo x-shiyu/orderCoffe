@@ -8,6 +8,7 @@
 
 /api/discount post 新增折扣信息
 
+
 /api/file get 获取文件
 /api/file post 上传文件
 /api/config/accept  put 修改配置，就是是否自动接单
