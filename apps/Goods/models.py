@@ -19,7 +19,7 @@ class Goods(models.Model):
     # 投票数
     vote = models.IntegerField(default=0)
     # 折扣
-    discount = models.FloatField()
+    discount = models.FloatField(default=100)
     # 当前商品可用多少积分来抵扣
     abstract_money = models.IntegerField(default=0)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)

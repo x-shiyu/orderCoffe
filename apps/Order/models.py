@@ -16,3 +16,5 @@ class Order(models.Model):
     abstract_pay = models.FloatField(default=0) 
     # 当前订单使用的折扣id
     promotion = models.ForeignKey(Promotion,on_delete=models.CASCADE)
+    create_time = models.DateField(auto_now_add=True)
+    update_time = models.DateField(auto_now=True)

@@ -1,10 +1,24 @@
 import json
+from os import X_OK
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from .models import Attachment
 # Create your views here.
 import time
 
+
+def getFile(request):
+    fileId = request.GET['id']
+    if fileId != None:
+      try:
+        fileObj = Attachment.objects.get(id=fileId)
+      except Attachment.DoesNotExist:
+        fileObj = {"file_path":'static/default.png'}
+      file = open(fileObj.file_path, 'rb')
+      response = FileResponse(file)
+      response['Content-Type'] = 'application/octet-stream'
+      # response['Content-Disposition'] = 'attachment;filename="BatchPayTemplate.xls"'
+      return response
 
 def upload(request):
     file_obj = request.FILES.get('file', None)

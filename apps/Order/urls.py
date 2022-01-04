@@ -1,7 +1,7 @@
 from django.urls import path, include
-from .views import upload
+from .views import OrderView
 
 
 urlpatterns = [
-    path('upload/',upload, name='upload'),
+    path('list/',OrderView.as_view(), name='order-list'),
 ]

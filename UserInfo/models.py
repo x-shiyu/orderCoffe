@@ -59,3 +59,4 @@ class Shop(models.Model):
     promotion = models.ForeignKey(
         Promotion, on_delete=models.CASCADE, null=True, blank=True)
     monthSell = models.IntegerField(default=0)
+    autoAccept = models.BooleanField(default=True)
