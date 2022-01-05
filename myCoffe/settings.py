@@ -87,7 +87,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'coffe_order',
         'USER': 'root',
-        'PASSWORD': '!1234567',
+        'PASSWORD': '123456',
         'PORT': '3306',
         'HOST': 'localhost'
     }

@@ -1,15 +1,18 @@
 import json
 from os import X_OK
 from django.shortcuts import render
-from django.http import HttpResponse, FileResponse
+from django.http import HttpResponse, FileResponse,HttpResponseBadRequest
 from .models import Attachment
 # Create your views here.
+import re
 import time
 
 
 def getFile(request):
     fileId = request.GET['id']
-    if fileId != None:
+    pattern = re.compile(r'^\d+$') 
+    res = re.search(pattern, fileId, flags=0)
+    if res != None:
       try:
         fileObj = Attachment.objects.get(id=fileId)
       except Attachment.DoesNotExist:
@@ -19,6 +22,7 @@ def getFile(request):
       response['Content-Type'] = 'application/octet-stream'
       # response['Content-Disposition'] = 'attachment;filename="BatchPayTemplate.xls"'
       return response
+    return HttpResponseBadRequest()
 
 def upload(request):
     file_obj = request.FILES.get('file', None)

@@ -1,5 +1,6 @@
-from django.http.response import HttpResponse
-from UserInfo.models import User, Group, Shop
+from django.forms.models import model_to_dict
+from django.http.response import HttpResponse, HttpResponseBadRequest
+from UserInfo.models import Promotion, User, Group, Shop
 from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import View
@@ -150,29 +151,110 @@ class LogoutView(View):
 
 
 class UserView(View):
-  @method_decorator(loginCheck)
-  def get(self, request):
-      # 获取用户的个人信息
-      user = request.user
-      shop = user.shop_set.all()[0]
-      if user.group_id == 1:
-          return HttpResponse(json.dumps({
-              "email": user.email,
-              "id": user.id,
-              "autoAccept": True,
-              "shop_promotion": shop.promotion,
-              'shop_name': shop.name,
-              "shop_thumb": shop.thumb_id,
-              "shop_desc": shop.desc,
-              "shop_autoAccept":shop.autoAccept
-          }))
-      else:
-          return HttpResponse(json.dumps({
-              "email": user.email,
-              "vip_level": 0,
-              "id": user.id,
-              "abstract_money": user.abstract_money,
-          }))
-  # @loginCheck
-  # def put(request):
-  #     pass
+    @method_decorator(loginCheck)
+    def get(self, request):
+        # 获取用户的个人信息
+        user = request.user
+        if user.group.code == 300:
+            shop = user.shop_set.all()[0]
+            return HttpResponse(json.dumps({
+                "email": user.email,
+                "id": user.id,
+                "shop_promotion": list(shop.promotion_set.all().values()),
+                'shop_name': shop.name,
+                "shop_thumb": shop.thumb_id,
+                "shop_desc": shop.desc,
+                "shop_autoAccept": shop.autoAccept
+            }))
+        elif user.group.code==100:
+            return HttpResponse(json.dumps({
+                "email": user.email,
+                "vip_level": 0,
+                "id": user.id,
+                "abstract_money": user.abstract_money,
+            }))
+
+    @method_decorator(loginCheck)
+    def put(self, request):
+        type = request.bodyJson.get('type')
+        user = request.user
+        if type == 'pwd':
+            password = request.bodyJson.get('password')
+            oldPassword = request.bodyJson.get('oldPassword')
+            if not all([password, oldPassword]):
+                return HttpResponseBadRequest('参数错误')
+            elif user.password != oldPassword:
+                return HttpResponseBadRequest('参数错误')
+            else:
+                user.password = password
+                user.save()
+                return HttpResponse('修改成功')
+
+
+class ShopView(View):
+    @method_decorator(loginCheck)
+    def get(self, request):
+        user = request.user
+        if user.group.code==300:
+            shop = user.shop_set.all()[0]
+            type = request.GET.get('type')
+            if type == 'promotion':
+                return HttpResponse(json.dumps(list(shop.promotion_set.all().values())))
+            return HttpResponseBadRequest('参数错误')
+        elif user.group.code==100:
+            shops = Shop.objects.all()
+            shopArr = []
+            for item in shops:
+                itemDict = model_to_dict(item)
+                itemDict['promotion'] = list(item.promotion_set.all().values())
+                shopArr.append(itemDict)
+            return HttpResponse(json.dumps(shopArr))
+
+
+    @method_decorator(loginCheck)
+    def put(self, request):
+        user_id = request.bodyJson.get('id')
+        value = request.bodyJson.get('value')
+        type = request.bodyJson.get('type')
+        user = request.user
+        shop = user.shop_set.all()[0]
+        response = HttpResponse()
+        response.status_code = 200
+        if not all([value, type]):
+            response.status_code = 400
+            response.content = "参数错误"
+        try:
+            if type == 'autoAccept':
+                value = True if value == 1 else False
+                shop.autoAccept = value
+            elif type == 'desc':
+                shop.desc = value
+            elif type == 'name':
+                shop.name = value
+            elif type == 'thumb':
+                shop.thumb = value
+            elif type == 'promotion':
+                deleteList = request.bodyJson.get('deleteList')
+                addArr = []
+                updateArr = []
+                for item in value:
+                    if item.get('id') == None:
+                        addArr.append(
+                            Promotion(full=item['full'], min=item['min'], shop=shop))
+                    else:
+                        updateArr.append(Promotion.objects.get(id=item.get('id')))
+                Promotion.objects.bulk_create(addArr)
+                if len(updateArr) > 0:
+                    Promotion.objects.bulk_update(updateArr, ['full', 'min'])
+                if len(deleteList)>0:
+                    Promotion.objects.filter(id__in=deleteList).delete()
+            else:
+                response.status_code = 400
+                response.content = "参数错误"
+                return response
+            shop.save()
+        except Exception as e:
+            response.status_code = 400
+            response.content = "参数错误"
+            return response
+        return HttpResponse('编辑成功')

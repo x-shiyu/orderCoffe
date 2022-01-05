@@ -4,11 +4,13 @@ from django.db.models.query_utils import Q
 from django.http.response import HttpResponse
 from django.views.generic import View
 from django.utils.decorators import method_decorator
+from UserInfo.models import Shop
 from apps.Goods.models import Category, Goods
 from utils.JsonParser import formatJson
 from decorator.auth import loginCheck
 from apps.File.models import Attachment
 # Create your views here.
+from django.forms.models import model_to_dict
 
 
 class CateView(View):
@@ -114,3 +116,18 @@ class GoodsView(View):
             "id": goods.pk
         })
         return response
+
+
+
+
+class ShopGoodsView(View):
+    @method_decorator(loginCheck)
+    def get(self,request):
+        shop_id = request.GET.get('id')
+        goods = Shop.objects.get(id=shop_id).goods_set.all()
+        goodsArr = []
+        for item in goods:
+          itemDict = model_to_dict(item)
+          itemDict['category_name'] = item.category.category_name
+          goodsArr.append(itemDict)
+        return HttpResponse(json.dumps(goodsArr))
