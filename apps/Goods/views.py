@@ -1,7 +1,7 @@
 import json
 from django.contrib.auth.decorators import login_required
 from django.db.models.query_utils import Q
-from django.http.response import HttpResponse, HttpResponseBadRequest
+from django.http.response import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
 from django.views.generic import View
 from django.utils.decorators import method_decorator
 from UserInfo.models import Shop
@@ -13,15 +13,47 @@ from apps.File.models import Attachment
 from django.forms.models import model_to_dict
 
 
+class GoodsDeleteView(View):
+    @method_decorator(loginCheck)
+    def post(self, request):
+        id = request.bodyJson.get('id')
+        if not all([id]):
+            return HttpResponseBadRequest('参数错误')
+        try:
+            Goods.objects.get(id=id).delete()
+        except Exception:
+            return HttpResponseServerError('删除失败')
+        return HttpResponse('删除成功')
+
+
+class CateDeleteView(View):
+    @method_decorator(loginCheck)
+    def post(self, request):
+        id = request.bodyJson.get('id')
+        if not all([id]):
+            return HttpResponseBadRequest('参数错误')
+        try:
+          cate = Category.objects.get(id=id)
+          goods = len(cate.goods_set.all())
+          if goods>0:
+            return HttpResponseBadRequest('请先删除此类别下的商品')
+          else:
+            cate.delete()
+        except Exception:
+            return HttpResponseServerError('删除失败')
+        return HttpResponse('删除成功')
+
 class CateView(View):
     @method_decorator(loginCheck)
     def get(self, request):
-      user = request.user
-      if user.group.code==300:
-        allCate = user.shop_set.all()[0].category_set.all()
-        return HttpResponse(formatJson(allCate))
-      else:
-        return HttpResponseBadRequest('用户错误，请重新登录')
+        user = request.user
+        keywords = request.GET.get('keywords')  or ''
+
+        if user.group.code == 300:
+            allCate = user.shop_set.all()[0].category_set.filter(category_name__icontains=keywords)
+            return HttpResponse(formatJson(allCate))
+        else:
+            return HttpResponseBadRequest('用户错误，请重新登录')
 
     @method_decorator(loginCheck)
     def post(self, request):
@@ -94,6 +126,8 @@ class GoodsView(View):
 
     @method_decorator(loginCheck)
     def post(self, request):
+        user = request.user
+        shop = user.shop_set.all()[0]
         discount = request.bodyJson['discount']
         name = request.bodyJson['name']
         price = request.bodyJson['price']
@@ -111,9 +145,9 @@ class GoodsView(View):
             cate = Category.objects.get(Q(id=cate_id))
             thumb = Attachment.objects.get(Q(id=thumb))
             goods = Goods.objects.create(
-                name=name, description=desc, price=price, category=cate, thumb=thumb, discount=discount)
-        except Exception:
-            print('创建商品失败-->', Exception)
+                name=name, description=desc, price=price, category=cate, thumb=thumb, discount=discount, shop=shop)
+        except Exception as e:
+            print('创建商品失败-->', e)
             response.status_code = 400
             response.content = '参数错误'
             return response
