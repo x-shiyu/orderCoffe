@@ -1,7 +1,7 @@
 import json
 from django.contrib.auth.decorators import login_required
 from django.db.models.query_utils import Q
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, HttpResponseBadRequest
 from django.views.generic import View
 from django.utils.decorators import method_decorator
 from UserInfo.models import Shop
@@ -16,8 +16,12 @@ from django.forms.models import model_to_dict
 class CateView(View):
     @method_decorator(loginCheck)
     def get(self, request):
-        allCate = request.user.shop_set.all()[0].category_set.all()
+      user = request.user
+      if user.group.code==300:
+        allCate = user.shop_set.all()[0].category_set.all()
         return HttpResponse(formatJson(allCate))
+      else:
+        return HttpResponseBadRequest('用户错误，请重新登录')
 
     @method_decorator(loginCheck)
     def post(self, request):
@@ -51,7 +55,8 @@ class GoodsView(View):
         keywords = request.GET['keywords'] or ''
         if cateId != None:
             try:
-                goods = Goods.objects.filter(category_id=cateId,name__icontains=keywords)
+                goods = Goods.objects.filter(
+                    category_id=cateId, name__icontains=keywords)
             except Goods.DoesNotExist:
                 goods = []
             return HttpResponse(json.dumps(list(goods.values())))
@@ -79,7 +84,7 @@ class GoodsView(View):
             cate = Category.objects.get(Q(id=cate_id))
             thumb = Attachment.objects.get(Q(id=thumb))
             Goods.objects.filter(id=goods_id).update(name=name, description=desc, price=price,
-                                          category=cate, thumb=thumb, discount=discount)
+                                                     category=cate, thumb=thumb, discount=discount)
         except Exception:
             print('更新失败-->', Exception)
             response.status_code = 400
@@ -118,16 +123,14 @@ class GoodsView(View):
         return response
 
 
-
-
 class ShopGoodsView(View):
     @method_decorator(loginCheck)
-    def get(self,request):
+    def get(self, request):
         shop_id = request.GET.get('id')
         goods = Shop.objects.get(id=shop_id).goods_set.all()
         goodsArr = []
         for item in goods:
-          itemDict = model_to_dict(item)
-          itemDict['category_name'] = item.category.category_name
-          goodsArr.append(itemDict)
+            itemDict = model_to_dict(item)
+            itemDict['category_name'] = item.category.category_name
+            goodsArr.append(itemDict)
         return HttpResponse(json.dumps(goodsArr))

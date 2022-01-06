@@ -27,3 +27,4 @@ class Goods(models.Model):
     # 月销售量
     month_sell = models.IntegerField(default=0)
     shop = models.ForeignKey(Shop,on_delete=models.CASCADE)
+
