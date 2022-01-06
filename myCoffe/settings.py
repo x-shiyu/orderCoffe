@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'myCoffe.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'coffe_order',
+        'NAME': 'test',
         'USER': 'root',
         'PASSWORD': '123456',
         'PORT': '3306',
