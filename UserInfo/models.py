@@ -31,7 +31,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(unique=True)
     nickname = models.CharField(max_length=100)
     password = models.CharField(max_length=200)
-    thumb = models.ForeignKey(Attachment, on_delete=models.CASCADE)
+    thumb = models.ForeignKey(Attachment, on_delete=models.CASCADE,blank=True,null=True)
     phone = models.CharField(max_length=11)
     age = models.IntegerField(default=18)
     # 积分

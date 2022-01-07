@@ -57,8 +57,8 @@ class CateView(View):
 
     @method_decorator(loginCheck)
     def post(self, request):
-        cate = request.bodyJson['cate']
-        desc = request.bodyJson['desc']
+        cate = request.bodyJson.get('cate')
+        desc = request.bodyJson.get('desc')
         response = HttpResponse()
         response.status_code = 200
 
@@ -99,13 +99,13 @@ class GoodsView(View):
 
     @method_decorator(loginCheck)
     def put(self, request):
-        discount = request.bodyJson['discount']
-        name = request.bodyJson['name']
-        price = request.bodyJson['price']
-        thumb = request.bodyJson['thumb']
-        desc = request.bodyJson['description']
-        cate_id = request.bodyJson['cate_id']
-        goods_id = request.bodyJson['id']
+        discount = request.bodyJson.get('discount')
+        name = request.bodyJson.get('name')
+        price = request.bodyJson.get('price')
+        thumb = request.bodyJson.get('thumb')
+        desc = request.bodyJson.get('description')
+        cate_id = request.bodyJson.get('cate_id')
+        goods_id = request.bodyJson.get('id')
         response = HttpResponse()
         response.status_code = 200
         if not all([name, price, thumb, desc, goods_id]):
@@ -128,19 +128,26 @@ class GoodsView(View):
     def post(self, request):
         user = request.user
         shop = user.shop_set.all()[0]
-        discount = request.bodyJson['discount']
-        name = request.bodyJson['name']
-        price = request.bodyJson['price']
-        thumb = request.bodyJson['thumb']
-        desc = request.bodyJson['description']
-        cate_id = request.bodyJson['cate_id']
+        discount = request.bodyJson.get('discount')
+        name = request.bodyJson.get('name')
+        price = request.bodyJson.get('price')
+        thumb = request.bodyJson.get('thumb')
+        desc = request.bodyJson.get('description')
+        cate_id = request.bodyJson.get('cate_id')
         response = HttpResponse()
         response.status_code = 200
+        discount = discount if discount !=None else 100
 
         if not all([name, price, thumb, desc]):
             response.status_code = 400
             response.content = "缺少参数"
             return response
+        if isinstance(price,str):
+          price = float(price)
+        if isinstance(discount,str):
+          discount = int(discount)
+        if not all([isinstance(discount,int),isinstance(price,float)]):
+          return HttpResponseBadRequest('参数类型错误')
         try:
             cate = Category.objects.get(Q(id=cate_id))
             thumb = Attachment.objects.get(Q(id=thumb))

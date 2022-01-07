@@ -76,10 +76,13 @@ class RegisterView(View):
             group = Group.objects.get(code=code)
             image = Attachment.objects.get(file_name='default')
         except Group.DoesNotExist:
-            group_name = "客户" if code == 100 else 300
+            group_name = "客户" if code == 100 else '商家'
             group = Group.objects.create(code=code, name=group_name)
         except Attachment.DoesNotExist:
             image = Attachment.objects.create(
+                file_name="default", file_path='default.jpg')
+        if image==None:
+           image = Attachment.objects.create(
                 file_name="default", file_path='default.jpg')
         user.group = group
         user.thumb = image
@@ -137,14 +140,14 @@ class LoginView(View):
 # user logout
 class LogoutView(View):
     """退出登录"""
+    @method_decorator(loginCheck)
+    def post(self, request):
+      """退出登录"""
+      # 清除用户的session信息
+      logout(request)
 
-    def get(self, request):
-        """退出登录"""
-        # 清除用户的session信息
-        logout(request)
-
-        # 跳转到首页
-        return HttpResponse('登出成功！')
+      # 跳转到首页
+      return HttpResponse('登出成功！')
 
 # /user
     """用户中心-信息页"""
